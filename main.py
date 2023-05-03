@@ -6,8 +6,9 @@ def is_primitive(data):
 
 # Recorre el mapa y cuenta el número de dicts anidados
 def read_dict(data_dict, dict_ints, f):
-    print("ENTRAMOS EN UN DICCIONARIO")
+    #print("ENTRAMOS EN UN DICCIONARIO")
     for key in data_dict:
+        #f.write((key + '\n'))
         if is_primitive(data_dict[key]):
             dict_ints['Primitivo'] +=1
             if isinstance(data_dict[key], int):
@@ -26,12 +27,45 @@ def read_dict(data_dict, dict_ints, f):
                     dict_ints['Dict'] +=1
                     print("LLEVAMOS ",read_dict(element, dict_ints, f))
     return dict_ints
-                
+
+def search_key(data_dict, key_to_search):
+    encontrado = False
+    buscar = 'S'
+    for key in data_dict:
+        print(key)
+        if isinstance(data_dict[key], list) and not encontrado:
+            if key == key_to_search:
+                encontrado = True
+                print("ES UNA LISTA")
+                buscar = input("¿Buscar la key dentro de la lista? [S/N] ")
+                while buscar != 'S' and buscar != 'N':
+                    print("Comando incorrecto")
+                    print("VALOR ANTES: ", buscar)
+                    buscar = input("¿Buscar la key dentro de la lista? [S/N] ")
+                    print("HOLA")
+                    print(buscar)
+                    if buscar == 'N':
+                        print("El valor de la clave " + key + " es " + str(data_dict[key]))
+            else:
+                print("Hemos encotrado una lista y la clave aún no\nRecorremos la lista")
+            for element in data_dict[key]:
+                if isinstance(element, dict) and buscar == 'S':
+                    buscar = input("DICCIONARIO ENCONTRADO, ¿RECORRERLO? [S/N] ")
+                    if buscar == 'S':
+                        search_key(element, key_to_search)
+                    elif buscar == 'N':
+                        print("NO LO RECORREMOS")
+                    else:
+                        print("NO SE")
+        elif key == key_to_search:
+            encontrado = True
+            print("El valor de la clave " + key + " es " + str(data_dict[key]))
 
 if __name__ == "__main__":
 
     url = "https://api.publicapis.org/entries"
     dict_ints = {'Primitivo': 0,'Int': 0, 'String': 0, 'Float': 0, 'Tupla': 0, 'Lista': 0, 'Dict': 1}
+    key_to_search = 'entries'
     # Archivo de prueba
     f = open("datos.txt", "a")
     socket.getaddrinfo('22.88.107.0', 8080)
@@ -51,4 +85,7 @@ if __name__ == "__main__":
           "\nEl número de floats es: ", dict_ints['Float'],
           "\nEl número de strings es: ", dict_ints['String'])
     f.close()
+
+    search_key(response_json, key_to_search)
+    #print("El valor de la clave " + key_to_search + " es " + str(response_json[key_to_search]))
     
