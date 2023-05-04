@@ -28,11 +28,13 @@ def read_dict(data_dict, dict_ints, f):
                     print("LLEVAMOS ",read_dict(element, dict_ints, f))
     return dict_ints
 
-def search_key(data_dict, key_to_search):
+def search_key(data_dict):
     encontrado = False
     buscar = 'S'
+    key_to_search = ''
     for key in data_dict:
         print(key)
+        print(str(data_dict[key]) + '\n=\n' + str(data_dict[-1]))
         if isinstance(data_dict[key], list) and not encontrado:
             if key == key_to_search:
                 encontrado = True
@@ -50,11 +52,14 @@ def search_key(data_dict, key_to_search):
                 print("Hemos encotrado una lista y la clave aún no\nRecorremos la lista")
             for element in data_dict[key]:
                 if isinstance(element, dict) and buscar == 'S':
+                    print(element)
+                    print(data_dict[key][-1])
                     buscar = input("DICCIONARIO ENCONTRADO, ¿RECORRERLO? [S/N] ")
                     if buscar == 'S':
                         search_key(element, key_to_search)
                     elif buscar == 'N':
                         print("NO LO RECORREMOS")
+                        buscar = 'S'
                     else:
                         print("NO SE")
         elif key == key_to_search:
@@ -65,7 +70,6 @@ if __name__ == "__main__":
 
     url = "https://api.publicapis.org/entries"
     dict_ints = {'Primitivo': 0,'Int': 0, 'String': 0, 'Float': 0, 'Tupla': 0, 'Lista': 0, 'Dict': 1}
-    key_to_search = 'entries'
     # Archivo de prueba
     f = open("datos.txt", "a")
     socket.getaddrinfo('22.88.107.0', 8080)
@@ -77,15 +81,15 @@ if __name__ == "__main__":
     #print(response_json)
     print("===================================")
     
-    print("El número de diccionarios es: ", read_dict(response_json, dict_ints, f)['Dict'],
-          "\nEl número de listas es: ", dict_ints['Lista'],
-          "\nEl número de tuplas es: ", dict_ints['Tupla'],
-          "\nEl número de tipos primitivos es: ", dict_ints['Primitivo'],
-          "\nEl número de ints es: ", dict_ints['Int'],
-          "\nEl número de floats es: ", dict_ints['Float'],
-          "\nEl número de strings es: ", dict_ints['String'])
+    #print("El número de diccionarios es: ", read_dict(response_json, dict_ints, f)['Dict'],
+    #      "\nEl número de listas es: ", dict_ints['Lista'],
+    #      "\nEl número de tuplas es: ", dict_ints['Tupla'],
+    #      "\nEl número de tipos primitivos es: ", dict_ints['Primitivo'],
+    #      "\nEl número de ints es: ", dict_ints['Int'],
+    #      "\nEl número de floats es: ", dict_ints['Float'],
+    #      "\nEl número de strings es: ", dict_ints['String'])
     f.close()
 
-    search_key(response_json, key_to_search)
+    search_key(response_json)
     #print("El valor de la clave " + key_to_search + " es " + str(response_json[key_to_search]))
     
